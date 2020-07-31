@@ -33,7 +33,7 @@ public class PlayState extends State {
 
         float[][] densityAddBuffer = new float[X_SIZE][Y_SIZE];
         float[][] densityRemoveBuffer = new float[X_SIZE][Y_SIZE];
-        advection(densityAddBuffer, densityRemoveBuffer);
+        advection(densityAddBuffer);
     }
 
     @Override
@@ -48,37 +48,57 @@ public class PlayState extends State {
         background.dispose();
     }
 
-    private void advection(float[][] densityAddBuffer, float[][] densityRemoveBuffer) {
+    private void advection(float[][] densityAddBuffer) {
 
 
         for (int x = 0; x < X_SIZE; x++) {
             for (int y = 0; y < X_SIZE; y++) {
-                pushDensity(x, y, densityAddBuffer, densityRemoveBuffer);
+                pushDensity(x, y, densityAddBuffer);
             }
         }
     }
 
-    private void pushDensity(int x, int y, float[][] densityAddBuffer, float[][] densityRemoveBuffer) {
+    private Buffer pushDensity(int x, int y, Buffer buffer) {
         float newX = x + velX[x][y];
         float newY = y + velY[x][y];
 
         float right = (newX % 1);
         float up = newY % 1;
 
-        float value = (1-right)*(1-up)*density[x][y];
-        densityAddBuffer[(int)Math.floor(newX)][(int)Math.floor(newY)] += value;
-        densityRemoveBuffer[x][y] -= value;
+        //TODO: loop this shit
+        int destX, destY;
+        float value;
 
+        //down left
+        destX = (int)Math.floor(newX);
+        destY = (int)Math.floor(newY);
+        value = (1-right)*(1-up)*density[x][y];
+        buffer.density[destX][destY] += value;
+        buffer.velXxDens[destX][destY] += value*velX[x][y];
+        buffer.velYxDens[destX][destY] += value*velY[x][y];
+
+        //down right
+        destX = (int)Math.floor(newX+1);
+        destY = (int)Math.floor(newY);
         value = (right)*(1-up)*density[x][y];
-        densityAddBuffer[(int)Math.floor(newX+1)][(int)Math.floor(newY)] += value;
-        densityRemoveBuffer[x][y] -= value;
+        buffer.density[destX][destY] += value;
+        buffer.velXxDens[destX][destY] += value*velX[x][y];
+        buffer.velYxDens[destX][destY] += value*velY[x][y];
 
+        //up left
+        destX = (int)Math.floor(newX);
+        destY = (int)Math.floor(newY+1);
         value = (1-right)*(up)*density[x][y];
-        densityAddBuffer[(int)Math.floor(newX)][(int)Math.floor(newY+1)] += value;
-        densityRemoveBuffer[x][y] -= value;
+        buffer.density[destX][destY] += value;
+        buffer.velXxDens[destX][destY] += value*velX[x][y];
+        buffer.velYxDens[destX][destY] += value*velY[x][y];
 
+        //up right
+        destX = (int)Math.floor(newX+1);
+        destY = (int)Math.floor(newY+1);
         value = (right)*(up)*density[x][y];
-        densityAddBuffer[(int)Math.floor(newX+1)][(int)Math.floor(newY+1)] += value;
-        densityRemoveBuffer[x][y] -= value;
+        buffer.density[destX][destY] += value;
+        buffer.velXxDens[destX][destY] += value*velX[x][y];
+        buffer.velYxDens[destX][destY] += value*velY[x][y];
     }
 }
