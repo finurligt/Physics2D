@@ -61,8 +61,27 @@ public class PlayState extends State {
         float newX = sourceX + velX[sourceX][sourceY];
         float newY = sourceY + velY[sourceX][sourceY];
 
-        if (newX < 1 || newX > X_SIZE - 2 || newY < 1 || newY > Y_SIZE - 2) {
-            //edge case
+        float right,up;
+
+        //edge cases
+        if (newX < 1) {
+            newX = 1;
+            right = 0;
+        } else if (newX > X_SIZE - 2) {
+            newX = X_SIZE - 2;
+            right = 1;
+        } else {
+            right = newX % 1;
+        }
+
+        if (newY < 1) {
+            newY = 1;
+            up = 0;
+        } else if (newY > Y_SIZE - 2) {
+            newY = Y_SIZE - 2;
+            up = 1;
+        } else {
+            up = newY % 1;
         }
 
         int destX, destY;
@@ -71,8 +90,8 @@ public class PlayState extends State {
 
         for (int x = 0; x<2; x++) {
             for (int y = 0; y<2; y++) {
-                float horizontalFlow = Math.abs(x - 1 + (newX % 1));
-                float verticalFlow = Math.abs(y - 1 + (newY % 1));
+                float horizontalFlow = Math.abs(x - 1 + (right));
+                float verticalFlow = Math.abs(y - 1 + (up));
                 destX = (int)Math.floor(newX+x);
                 destY = (int)Math.floor(newY+y);
                 value = (horizontalFlow)*(verticalFlow)*density[sourceX][sourceY];
