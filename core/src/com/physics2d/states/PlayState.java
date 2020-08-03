@@ -31,8 +31,8 @@ public class PlayState extends State {
     protected void update(float dt) {
         handleInput();
 
-        Buffer buffer = new Buffer();
-        advection(buffer);
+
+        advection(new Buffer());
     }
 
     @Override
@@ -51,10 +51,18 @@ public class PlayState extends State {
 
 
         for (int x = 0; x < X_SIZE; x++) {
-            for (int y = 0; y < X_SIZE; y++) {
+            for (int y = 0; y < Y_SIZE; y++) {
                 pushDensity(x, y, buffer);
             }
         }
+        for (int x = 0; x < X_SIZE; x++) {
+            for (int y = 0; y < Y_SIZE; y++) {
+                velX[x][y]=buffer.velXxDens[x][y]/buffer.density[x][y];
+                velY[x][y]=buffer.velYxDens[x][y]/buffer.density[x][y];
+            }
+        }
+        density = buffer.density;
+
     }
 
     private Buffer pushDensity(int sourceX, int sourceY, Buffer buffer) {
