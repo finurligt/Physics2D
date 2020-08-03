@@ -1,5 +1,7 @@
 package com.physics2d.states;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.physics2d.Physics2D;
@@ -32,13 +34,21 @@ public class PlayState extends State {
         handleInput();
 
 
-        advection(new Buffer());
+        advection(new Buffer(X_SIZE,Y_SIZE));
     }
 
     @Override
     public void render(SpriteBatch sb) {
         sb.begin();
         sb.draw(background, 0, 0, Physics2D.WIDTH, Physics2D.HEIGHT);
+
+        Pixmap myPixMap = new Pixmap(X_SIZE, Y_SIZE, Pixmap.Format.RGBA8888);
+        myPixMap.setColor(Color.RED);
+        myPixMap.drawLine(0, 0, X_SIZE, Y_SIZE);
+
+        Texture t = new Texture(myPixMap);
+        sb.draw(t, 0, 0, Physics2D.WIDTH, Physics2D.HEIGHT);
+
         sb.end();
     }
 
